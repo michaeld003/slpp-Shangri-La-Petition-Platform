@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+  <title>Petition Details - SLPP</title>
+</head>
+<body>
+<main>
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="mb-0" th:text="${petition != null ? petition.title : 'Petition not found'}"></h2>
+      <span th:if="${petition != null}" class="badge"
+            th:classappend="${petition.status == T(com.shangri_la.slpp.entity.Petition.PetitionStatus).OPEN ? 'bg-success' : 'bg-secondary'}"
+            th:text="${petition.status}">
+            </span>
+    </div>
+    <div class="card-body" th:if="${petition != null}">
+      <div class="mb-4">
+        <p class="text-muted">
+          Created by <span th:text="${petition.creator != null ? petition.creator.fullName : 'Unknown'}"></span>
+          on <span th:text="${petition.createdAt != null ? #temporals.format(petition.createdAt, 'dd MMM yyyy') : 'Unknown date'}"></span>
+        </p>
+        <p th:text="${petition.content}" style="white-space: pre-line;"></p>
+      </div>
+
+      <div class="mb-4">
+        <h4>Signatures: <span th:text="${petition.signatureCount != null ? petition.signatureCount : 0}"></span></h4>
+        <div sec:authorize="isAuthenticated()" th:if="${petition.status != null && petition.status.name() == 'OPEN'}">
+          <form th:action="@{/petition/{id}/sign(id=${petition.id})}" method="post"
+                th:if="!${#lists.contains(petition.signatures, #authentication.principal)}">
+            <button type="submit" class="btn btn-primary">Sign this Petition</button>
+          </form>
+          <p class="text-success" th:if="${#lists.contains(petition.signatures, #authentication.principal)}">
+            You have signed this petition.
+          </p>
+        </div>
+      </div>
+
+      <div th:if="${petition.response}" class="mt-4">
+        <h4>Committee Response:</h4>
+        <div class="alert alert-info">
+          <p th:text="${petition.response}" style="white-space: pre-line;"></p>
+        </div>
+      </div>
+
+      <div sec:authorize="hasRole('COMMITTEE')"
+           th:if="${petition.status != null && petition.status.name() == 'OPEN'}"
+           class="mt-4">
+        <h4>Provide Committee Response</h4>
+        <form th:action="@{/committee/petition/{id}/respond(id=${petition.id})}" method="post">
+          <div class="mb-3">
+            <textarea name="response" class="form-control" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Response & Close Petition</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+  <title>Home - Shangri-La Petition Platform</title>
+</head>
+<body>
+<main>
+  <h2>Welcome to Shangri-La Petition Platform</h2>
+
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div th:if="${petitions.empty}" class="alert alert-info">
+        No petitions available at the moment.
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-4" th:each="petition : ${petitions}">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title" th:text="${petition.title}">Petition Title</h5>
+              <p class="card-text" th:text="${#strings.abbreviate(petition.content, 150)}">
+                Petition content...
+              </p>
+              <div class="mt-auto">
+                                <span class="badge"
+                                      th:classappend="${petition.status.name() == 'OPEN' ? 'bg-success' : 'bg-secondary'}"
+                                      th:text="${petition.status}">Status</span>
+                <span class="ms-2" th:text="'Signatures: ' + ${petition.signatureCount}"></span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <a th:href="@{/petition/{id}(id=${petition.id})}"
+                 class="btn btn-primary btn-sm">View Details</a>
+              <form th:if="${petition.status.name() == 'OPEN'}"
+                    sec:authorize="isAuthenticated()"
+                    th:action="@{/petition/{id}/sign(id=${petition.id})}"
+                    method="post"
+                    style="display: inline;">
+                <button type="submit" class="btn btn-success btn-sm">Sign Petition</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

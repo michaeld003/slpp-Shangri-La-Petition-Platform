@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+  <title>Dashboard - SLPP</title>
+</head>
+<body>
+<main>
+  <div class="container mt-4">
+    <h2>My Dashboard</h2>
+
+    <div class="mb-4">
+      <a th:href="@{/petition/new}" class="btn btn-primary">Create New Petition</a>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <h3>My Petitions</h3>
+        <div class="card mb-4" th:each="petition : ${userPetitions}">
+          <div class="card-body">
+            <h4 class="card-title" th:text="${petition.title}"></h4>
+            <p class="card-text" th:text="${#strings.abbreviate(petition.content, 200)}"></p>
+            <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge"
+                                  th:classappend="${petition.status == T(com.shangri_la.slpp.entity.Petition.PetitionStatus).OPEN ? 'bg-success' : 'bg-secondary'}"
+                                  th:text="${petition.status}">
+                            </span>
+              <div>
+                <span class="me-3">Signatures: <span th:text="${petition.signatureCount}"></span></span>
+                <a th:href="@{/petition/{id}(id=${petition.id})}" class="btn btn-outline-primary btn-sm">View Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div th:if="${#lists.isEmpty(userPetitions)}" class="alert alert-info">
+          You haven't created any petitions yet.
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

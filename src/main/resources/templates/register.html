@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+  <title>Register - SLPP</title>
+</head>
+<body>
+<main>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="mb-0">Register</h4>
+          </div>
+          <div class="card-body">
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}">
+            </div>
+
+            <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+              </div>
+
+              <div class="mb-3">
+                <label for="fullName" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="fullName" th:field="*{fullName}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+              </div>
+
+              <div class="mb-3">
+                <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
+              </div>
+
+              <div class="mb-3">
+                <label for="bioid" class="form-label">Biometric ID (BioID)</label>
+                <input type="text" class="form-control" id="bioid" th:field="*{bioid}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('bioid')}" th:errors="*{bioid}"></div>
+              </div>
+
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+
+            <div class="mt-3">
+              <p>Already have an account? <a th:href="@{/login}">Login here</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+  <title>Create Petition - SLPP</title>
+</head>
+<body>
+<main>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3>Create New Petition</h3>
+        </div>
+        <div class="card-body">
+          <form th:action="@{/petition/new}" th:object="${petitionRequest}" method="post">
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input type="text" class="form-control" id="title" th:field="*{title}" required>
+              <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="content" class="form-label">Content</label>
+              <textarea class="form-control" id="content" th:field="*{content}" rows="10" required></textarea>
+              <div class="text-danger" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
+              <small class="text-muted">Minimum 50 characters. Clearly state your petition's purpose and goals.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Petition</button>
+            <a th:href="@{/dashboard}" class="btn btn-secondary">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
